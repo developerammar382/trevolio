@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  /* Trevolio Premium Theme */
+
+  /* Borders & Inputs */
+  --color-border: hsl(214 32% 91%);
+  --color-input: hsl(214 32% 91%);
+  --color-ring: hsl(217 37% 31%);
+  /* Primary Blue Ring */
+
+  /* Backgrounds */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 20%);
+  /* #333333 Dark Grey */
+
+  /* Primary - Dark Blue #31476B */
+  --color-primary: hsl(217 37% 31%);
+  --color-primary-foreground: hsl(0 0% 100%);
+
+  /* Secondary - Light Gray/Blueish */
+  --color-secondary: hsl(210 40% 96%);
+  --color-secondary-foreground: hsl(217 37% 31%);
+
+  /* Accent - Gold #CC9933 */
+  --color-accent: hsl(40 60% 50%);
+  --color-accent-foreground: hsl(0 0% 100%);
+
+  /* Tertiary - Teal #4A9C83 */
+  --color-tertiary: hsl(162 36% 45%);
+  --color-tertiary-foreground: hsl(0 0% 100%);
+
+  /* Destructive - Red */
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+
+  /* Muted */
+  --color-muted: hsl(210 40% 96%);
+  --color-muted-foreground: hsl(215 16% 47%);
+
+  /* Card */
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 20%);
+
+  /* Popover */
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(0 0% 20%);
+
+  /* Radius */
+  --radius-lg: 0.5rem;
+  /* 8px */
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  /* Font */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Form Elements - Always Visible */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  textarea,
+  select {
+    @apply border border-slate-300 rounded-lg px-4 py-2 bg-white text-slate-900 placeholder:text-slate-500;
+    @apply focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all;
+  }
+
+  /* Ensure text is always dark and visible */
+  input,
+  textarea,
+  select {
+    color: #1F2937 !important;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
