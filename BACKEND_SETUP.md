@@ -94,11 +94,23 @@ php artisan db:seed
 ```
 
 ### 7. Fire Up the Server Ecosystem
-You can boot all background processes (HTTP API server, Queue Workers, real-time WebSockets server, and CLI log streamer) simultaneously:
+You can boot all background processes (HTTP API server, Queue Workers, Vite asset compiler, and CLI log streamer) simultaneously:
 ```bash
 composer dev
 ```
-*(Alternatively, run just the HTTP server using `php artisan serve`)*
+
+### 8. Start WebSockets & Queue Workers
+For real-time functionality (chat & stripe webhooks):
+- **WebSockets (Laravel Reverb)**:
+  ```bash
+  php artisan reverb:start --host=0.0.0.0 --port=8080
+  ```
+  *(Or run the helper script `./start-reverb.sh`)*
+- **Queue Workers**:
+  ```bash
+  php artisan queue:work --tries=3 --timeout=60
+  ```
+  *(Or run the background daemon `./start-queue.sh`)*
 
 ---
 

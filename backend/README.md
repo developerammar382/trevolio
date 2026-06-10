@@ -110,11 +110,44 @@ Ensure PHP 8.2+ and Composer are installed.
    php artisan migrate --seed
    ```
 
-3. Run the complete Dev ecosystem:
+3. Run the primary Dev ecosystem (starts HTTP server, Queue listener, Vite asset compiler, and CLI log streamer concurrently):
    ```bash
    composer dev
    ```
-   *(This triggers Laravel server, Laravel Reverb socket server, queue worker, and Pail logs concurrently using npm concurrently package)*
+
+4. Start the WebSockets server (to enable real-time chat & notifications):
+   ```bash
+   php artisan reverb:start --host=0.0.0.0 --port=8080
+   ```
+
+---
+
+## 📡 Running WebSockets & Queue Workers
+
+For full retail storefront functionality, both the WebSockets server (acting as your local Pusher server) and the asynchronous Queue Worker must be running.
+
+### Option A: Using Helper Scripts (Run as Background Daemons)
+You can start these tasks as background services using the pre-configured scripts:
+```bash
+# Start WebSockets (Laravel Reverb)
+./start-reverb.sh
+
+# Start the background Queue Worker
+./start-queue.sh
+
+# Stop the background Queue Worker when done
+./stop-queue.sh
+```
+
+### Option B: Running Manually (Foreground Processes)
+Open new terminal tabs to run the processes directly and view live trace logs:
+```bash
+# Terminal Tab 1: Laravel Reverb (WebSocket / Pusher protocol server)
+php artisan reverb:start --host=0.0.0.0 --port=8080
+
+# Terminal Tab 2: Queue Worker (processes email queues, stripe confirmations, etc.)
+php artisan queue:work --tries=3 --timeout=60
+```
 
 ---
 
