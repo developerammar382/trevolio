@@ -12,7 +12,8 @@ return new class extends Migration {
     {
         Schema::table('banners', function (Blueprint $table) {
             // Change position from string to JSON to support multiple positions
-            $table->json('position')->default('["popup"]')->change();
+            // Removed default value because MySQL does not support defaults for JSON columns
+            $table->json('position')->nullable()->change();
         });
     }
 

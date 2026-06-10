@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->decimal('sale_price', 10, 2)->nullable();
             $table->string('sku')->unique();
             $table->integer('stock_quantity')->default(0);
+            $table->integer('stock_threshold')->default(10);
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true);
             $table->json('images')->nullable();

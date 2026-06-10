@@ -1,211 +1,195 @@
-# Backend & Database Setup Guide
+<div align="center">
 
-## Current Configuration
+# ✦ Backend & Database Setup Guide
 
-Your backend is configured to use **SQLite** database, which is perfect for development. The database file already exists at `database/database.sqlite`.
+**The ultimate handbook for configuring, running, and testing the Trevolio E-Commerce API & Database.**
+
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
+[![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://sqlite.org)
+[![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com)
+[![Stripe](https://img.shields.io/badge/Stripe-API-008CFF?style=flat-square&logo=stripe&logoColor=white)](https://stripe.com)
+
+<br />
+
+**[← Back to Root README](./README.md) • [→ Frontend Guide](./frontend/README.md) • [→ Backend Guide](./backend/README.md)**
+
+<br />
 
 ---
 
-## Quick Start (Database Already Set Up)
+</div>
 
-Since your database is already created and migrated, you can start the backend immediately:
+## 🔌 System Status
+
+Currently, the backend is configured to use **SQLite** as its default development database, allowing you to run the project locally without installing or configuring a full MySQL/PostgreSQL server. The pre-built database file resides at: `backend/database/database.sqlite`.
+
+---
+
+## ⚡ Quick Start (Database Pre-Seeded)
+
+If your database file is already created and migrated, you can start the backend services immediately:
 
 ```bash
 cd backend
 php artisan serve
 ```
 
-The backend will run on **http://localhost:8000**
+The backend API will run on **http://localhost:8000** and will be ready to process incoming requests from the frontend client.
 
 ---
 
-## Complete Setup Steps (If Starting Fresh)
+## 🏗️ Step-by-Step Setup Guide
 
-### 1. Install Dependencies
+Follow these steps if you are configuring the application on a fresh machine or if you want to rebuild the database from scratch.
 
+### 1. Install Composer Dependencies
+Navigate to the backend directory and install all required PHP packages:
 ```bash
 cd backend
 composer install
 ```
 
-### 2. Create Environment File
-
+### 2. Configure Environment Settings
+Create a copy of the `.env.example` file and name it `.env`:
 ```bash
 cp .env.example .env
 ```
 
-### 3. Generate Application Key
-
+### 3. Generate Cryptographic Application Key
+Set the `APP_KEY` environment variable, which Laravel uses for encrypting user sessions and cookies:
 ```bash
 php artisan key:generate
 ```
 
-### 4. Create SQLite Database File
-
+### 4. Setup Database File (For SQLite)
+If using the default SQLite connection, create an empty file for your database:
 ```bash
+# macOS / Linux
 touch database/database.sqlite
+
+# Windows (PowerShell)
+New-Item -ItemType File -Path database/database.sqlite
 ```
 
-### 5. Run Migrations
-
+### 5. Run Database Migrations
+Create the core schema and tables inside the database:
 ```bash
 php artisan migrate
 ```
 
-This creates all database tables:
-- users
-- categories
-- products
-- orders
-- order_items
-- reviews
-- coupons
-- blogs
-- carts
-- wishlists
-- settings
+This command builds the following schema:
+- `users` — Store accounts & billing profiles
+- `categories` & `subcategories` — Product classifications
+- `products` & `banners` — Inventory catalog & storefront assets
+- `orders` & `order_items` — Cart checkouts, shipping & payments
+- `reviews` — User ratings & feedback
+- `coupons` — Promotional discounts
+- `wishlists` & `carts` — User-personalized lists
+- `settings` — Global configuration parameters
 
-### 6. Seed Database (Optional)
-
+### 6. Populate Sample Seed Data
+Generate default administrator credentials, dummy products, categories, reviews, and test users:
 ```bash
 php artisan db:seed
 ```
 
-This adds sample data:
-- Categories (Electronics, Clothing, Home & Garden, etc.)
-- Products (20+ sample products)
-
-### 7. Start Backend Server
-
+### 7. Fire Up the Server Ecosystem
+You can boot all background processes (HTTP API server, Queue Workers, real-time WebSockets server, and CLI log streamer) simultaneously:
 ```bash
-php artisan serve
+composer dev
 ```
-
-Backend runs on: **http://localhost:8000**
+*(Alternatively, run just the HTTP server using `php artisan serve`)*
 
 ---
 
-## Using MySQL Instead of SQLite
+## 🛢️ Using MySQL / MariaDB (Optional)
 
-If you prefer MySQL, update your `.env` file:
+To switch from SQLite to MySQL for production or robust testing, update your `backend/.env` file:
 
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=ecommerce
+DB_DATABASE=trevolio_db
 DB_USERNAME=root
-DB_PASSWORD=your_password
+DB_PASSWORD=your_mysql_password
 ```
 
-Then create the database:
-
-```bash
-mysql -u root -p
-CREATE DATABASE ecommerce;
-exit;
+Create the schema manually in your local MySQL instance:
+```sql
+CREATE DATABASE trevolio_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-Run migrations:
-
+Then run the migrations and seeders:
 ```bash
-php artisan migrate
-php artisan db:seed
-```
-
----
-
-## Verify Backend is Running
-
-### Test API Endpoints
-
-```bash
-# Get products
-curl http://localhost:8000/api/products
-
-# Get categories
-curl http://localhost:8000/api/categories
-```
-
-### Check Database
-
-```bash
-# View database tables
-php artisan db:show
-
-# Check if data exists
-php artisan tinker
->>> \App\Models\Product::count()
->>> \App\Models\Category::count()
-```
-
----
-
-## Common Commands
-
-```bash
-# Clear cache
-php artisan cache:clear
-php artisan config:clear
-
-# Run tests
-php artisan test
-
-# View routes
-php artisan route:list
-
-# Fresh migration (WARNING: deletes all data)
 php artisan migrate:fresh --seed
 ```
 
 ---
 
-## Frontend Connection
+## 🔍 Verification & Diagnostics
 
-Make sure your frontend `.env` file has:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-```
-
-Then start frontend:
+### Test API Endpoints
+Run these curl commands to ensure your Laravel server is responding correctly:
 
 ```bash
-cd frontend
-npm run dev
+# Fetch all products catalog
+curl -X GET http://localhost:8000/api/products
+
+# Fetch categories list
+curl -X GET http://localhost:8000/api/categories
 ```
 
-Frontend runs on: **http://localhost:3000**
+### Query Database via Laravel Tinker
+Tinker is an interactive CLI for executing PHP code directly in your application container:
+```bash
+php artisan tinker
+```
+```php
+// Check total database seed counts
+\App\Models\Product::count();
+\App\Models\User::count();
+```
 
 ---
 
-## Troubleshooting
+## 🛠️ Common Utility Commands
 
-### Database Connection Error
+| Command | What it does |
+| :--- | :--- |
+| `php artisan cache:clear` | Clear system, config, and view cache |
+| `php artisan config:clear` | Purge cached config files (use after modifying `.env`) |
+| `php artisan test` | Run the complete backend test suite |
+| `php artisan route:list` | Print a table of all registered API routes |
+| `php artisan migrate:fresh --seed` | **WARNING:** Drops all tables and seeds fresh database |
 
-If you see "database not found":
+---
+
+## 🚨 Troubleshooting
+
+### "Database file not found" (SQLite)
+If you see connection failures, verify that `database/database.sqlite` exists and has read/write permissions:
 ```bash
 touch database/database.sqlite
 php artisan migrate
 ```
 
-### Permission Issues
-
+### "Access Denied / Permission Denied"
+If storing temporary files or uploading images fails, reset directory permissions:
 ```bash
 chmod -R 775 storage bootstrap/cache
 ```
 
-### Port Already in Use
-
+### Port 8000 Already in Use
+To run the Laravel server on a separate port:
 ```bash
-# Use different port
 php artisan serve --port=8001
 ```
 
-### Clear Everything and Start Fresh
+---
 
-```bash
-php artisan migrate:fresh --seed
-php artisan cache:clear
-php artisan config:clear
-```
+<div align="center">
+
+**[← Back to Root README](./README.md)**
+
+</div>
